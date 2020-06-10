@@ -106,7 +106,7 @@ def readfile(filename):
             continue
         splits = line.split(' ')
         sentence.append(splits[0])
-        label.append(splits[-1][:-1])
+        label.append(splits[-1])
 
     if len(sentence) >0:
         data.append((sentence,label))
@@ -154,7 +154,16 @@ class NerProcessor(DataProcessor):
             self._read_tsv(os.path.join(data_dir, "test.txt")), "test")
 
     def get_labels(self):
-        return ["O", "B-MISC", "I-MISC",  "B-PER", "I-PER", "B-ORG", "I-ORG", "B-LOC", "I-LOC", "[CLS]", "[SEP]"]
+        resp = ["O"]
+        with open("tags.txt") as tags:
+            for line in tags:
+                tag = line.strip('\n')
+                resp.append("B-"+tag)    
+                resp.append("I-"+tag)    
+        resp = list(set(resp))
+        resp.append("[CLS]")
+        resp.append("[SEP]")
+        return resp
 
     def _create_examples(self,lines,set_type):
         examples = []
@@ -207,7 +216,7 @@ def convert_examples_to_features(examples, label_list, max_seq_length, tokenizer
             ntokens.append(token)
             segment_ids.append(0)
             if len(labels) > i:
-                label_ids.append(label_map[labels[i]])
+                label_ids.append(label_map[labels[i].strip('\n')])
         ntokens.append("[SEP]")
         segment_ids.append(0)
         valid.append(1)
@@ -405,8 +414,9 @@ def main():
     label_list = processor.get_labels()
     num_labels = len(label_list) + 1
 
-    tokenizer = BertTokenizer.from_pretrained(args.bert_model, do_lower_case=args.do_lower_case)
-
+    # tokenizer = BertTokenizer.from_pretrained(args.bert_model, do_lower_case=args.do_lower_case)
+    tokenizer = BertTokenizer.from_pretrained('vocab.txt', do_lower_case=False)
+    
     train_examples = None
     num_train_optimization_steps = 0
     if args.do_train:
@@ -420,10 +430,11 @@ def main():
         torch.distributed.barrier()  # Make sure only the first process in distributed training will download model & vocab
 
     # Prepare model
-    config = BertConfig.from_pretrained(args.bert_model, num_labels=num_labels, finetuning_task=args.task_name)
-    model = Ner.from_pretrained(args.bert_model,
-              from_tf = False,
-              config = config)
+    # config = BertConfig.from_pretrained(args.bert_model, num_labels=num_labels, finetuning_task=args.task_name)
+    # model = Ner.from_pretrained(args.bert_model,
+    #           from_tf = False,
+    #           config = config)
+    model = Ner.from_pretrained(args.bert_model)  # Or other BERT model class
 
     if args.local_rank == 0:
         torch.distributed.barrier()  # Make sure only the first process in distributed training will download model & vocab
