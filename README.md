@@ -7,6 +7,10 @@
 
 - python run_ner.py --data_dir=data/ --bert_model=bert-base-cased-pt-br --task_name=ner --output_dir=out_base --max_seq_length=128 --do_train --num_train_epochs 5 --do_eval --warmup_proportion=0.1
 
+- python run_ner.py --data_dir=data/ --bert_model=bert-base-cased-pt-br --train_batch_size=8 --task_name=ner --output_dir=out_base --max_seq_length=128 --do_train --num_train_epochs 5 --do_eval --warmup_proportion=0.1
+
+** To use pytorch with my notebook: conda install pytorch torchvision cuda90 -c pytorch
+
 Use google BERT to do CoNLL-2003 NER !
 
 ![new](https://i.imgur.com/OB4Ugp4.png) Train model using Python and Inference using C++

@@ -20,6 +20,7 @@ RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.
 
 RUN mkdir -p /app
 WORKDIR /app
+COPY requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
 EXPOSE 8888
