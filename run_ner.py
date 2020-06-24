@@ -430,11 +430,11 @@ def main():
         torch.distributed.barrier()  # Make sure only the first process in distributed training will download model & vocab
 
     # Prepare model
-    # config = BertConfig.from_pretrained(args.bert_model, num_labels=num_labels, finetuning_task=args.task_name)
-    # model = Ner.from_pretrained(args.bert_model,
-    #           from_tf = False,
-    #           config = config)
-    model = Ner.from_pretrained(args.bert_model)  # Or other BERT model class
+    config = BertConfig.from_pretrained(args.bert_model, num_labels=num_labels, finetuning_task=args.task_name)
+    model = Ner.from_pretrained(args.bert_model,
+              from_tf = False,
+              config = config)
+    # model = Ner.from_pretrained(args.bert_model)  # Or other BERT model class
 
     if args.local_rank == 0:
         torch.distributed.barrier()  # Make sure only the first process in distributed training will download model & vocab
