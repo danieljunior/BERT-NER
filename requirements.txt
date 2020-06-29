@@ -1,5 +1,7 @@
-pytorch-transformers==1.2.0
-torch==1.2.0
+# pytorch-transformers==1.2.0
+# torch==1.2.0
+pytorch-transformers==1.1.0
+torch==1.1.0
 # metric
 seqeval==0.0.5
 # training progressbar
